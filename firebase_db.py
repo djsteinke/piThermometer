@@ -3,7 +3,6 @@ from firebase_admin import db
 import logging
 import requests
 import datetime as dt
-from time import sleep
 
 module_logger = logging.getLogger('main.firebase_db')
 
@@ -29,12 +28,14 @@ def update_current(val):
     if network_up:
         try:
             current.set(val)
+            module_logger.debug("update_current() :\n" + str(val))
         except Exception as e:
             module_logger.error("update_current() : " + str(e) + "\n" + str(val))
 
 
 def add_history(val):
     histories.append(val)
+    module_logger.debug("add_history() :")
     while True:
         if network_up:
             try:
@@ -42,10 +43,11 @@ def add_history(val):
                 new_history = history.push()
                 new_history.set(h)
                 histories.pop(0)
+                module_logger.debug("\n" + str(h))
                 if len(histories) == 0:
                     break
             except Exception as e:
-                module_logger.error("add_history() : " + str(e) + "\n" + str(val))
+                module_logger.error("ERROR : " + str(e))
                 break
         else:
             break
