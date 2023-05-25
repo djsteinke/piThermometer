@@ -28,9 +28,9 @@ update_current_interval = 300   # 5 mins
 add_history_interval = 1200  # 20 mins
 get_current_interval = 60
 
-last_update_current = dt.datetime.now()
-last_add_history = dt.datetime.now()
-last_get_current = dt.datetime.now()
+last_update_current = dt.datetime.utcnow()
+last_add_history = dt.datetime.utcnow()
+last_get_current = dt.datetime.utcnow()
 
 current = {
     "dt": 0,
@@ -48,7 +48,7 @@ history = {
 
 def add_history(now):
     global last_add_history
-    c_dt = dt.datetime.fromtimestamp(current["dt"])
+    c_dt = dt.datetime.utcfromtimestamp(current["dt"])
     if last_add_history < now and c_dt > last_add_history:
         val = {"dt": now.timestamp(), "h": current["h"], "t": current["t"], "tF": current["tF"]}
         firebase_db.update_current(val)
@@ -58,7 +58,7 @@ def add_history(now):
 def update_current(now):
     global last_update_current
     if last_update_current < now:
-        c_dt = dt.datetime.fromtimestamp(current["dt"])
+        c_dt = dt.datetime.utcfromtimestamp(current["dt"])
         val = {"dt": c_dt.isoformat(), "h": current["h"], "t": current["t"], "tF": current["tF"]}
         firebase_db.update_current(val)
         last_update_current += dt.timedelta(seconds=update_current_interval)
@@ -77,7 +77,7 @@ def get_current(now):
 
 def main():
     while True:
-        now = dt.datetime.now()
+        now = dt.datetime.utcnow()
         firebase_db.check_network(now)
         get_current(now)
         update_current(now)
