@@ -1,0 +1,67 @@
+import firebase_admin
+from firebase_admin import db
+import logging
+import requests
+import datetime as dt
+from time import sleep
+
+module_logger = logging.getLogger('main.firebase_db')
+
+databaseURL = "https://pitemperature-a22b2-default-rtdb.firebaseio.com"
+
+cred_obj = firebase_admin.credentials.Certificate("/home/pi/projects/piTempFirebaseKey.json")
+default_app = firebase_admin.initialize_app(cred_obj, {
+    'databaseURL': databaseURL
+})
+
+ref = db.reference("/")
+
+current = ref.child('current')
+history = ref.child('history')
+
+histories = []
+network_up = False
+network_check_interval = 15
+network_check_next = dt.datetime.now()
+
+
+def update_current(val):
+    if network_up:
+        try:
+            current.set(val)
+        except Exception as e:
+            module_logger.error("update_current() : " + str(e) + "\n" + str(val))
+
+
+def add_history(val):
+    histories.append(val)
+    while True:
+        if network_up:
+            try:
+                h = histories[0]
+                new_history = history.push()
+                new_history.set(h)
+                histories.pop(0)
+                if len(histories) == 0:
+                    break
+            except Exception as e:
+                module_logger.error("add_history() : " + str(e) + "\n" + str(val))
+                break
+        else:
+            break
+
+
+def check_network(now):
+    global network_up, network_check_next
+    if network_check_next < now:
+        try:
+            requests.get("https://google.com")
+            if not network_up:
+                module_logger.debug('network state : UP')
+            network_up = True
+            return network_up
+        except:
+            if network_up:
+                module_logger.error('network state : DOWN')
+            network_up = False
+        network_check_next = now + dt.timedelta(seconds=network_check_interval)
