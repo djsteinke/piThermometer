@@ -50,7 +50,7 @@ def add_history(now):
     global last_add_history
     c_dt = dt.datetime.utcfromtimestamp(current["dt"])
     if last_add_history < now and c_dt > last_add_history:
-        val = {"dt": now.timestamp(), "h": current["h"], "t": current["t"], "tF": current["tF"]}
+        val = {"dt": now.timestamp(), "h": current["h"], "t": current["t"]}
         firebase_db.add_history(val)
         last_add_history += dt.timedelta(seconds=add_history_interval)
 
