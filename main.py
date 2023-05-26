@@ -30,8 +30,11 @@ add_history_interval = 1200  # 20 mins
 get_current_interval = 60
 
 last_update_current = dt.datetime.utcnow()
+last_update_current = last_update_current.replace(tzinfo=timezone.utc)
 last_add_history = dt.datetime.utcnow()
+last_add_history = last_add_history.replace(tzinfo=timezone.utc)
 last_get_current = dt.datetime.utcnow()
+last_get_current = last_get_current.replace(tzinfo=timezone.utc)
 
 current = {
     "dt": 0,
@@ -50,6 +53,7 @@ history = {
 def add_history(now):
     global last_add_history
     c_dt = dt.datetime.utcfromtimestamp(current["dt"])
+    c_dt = c_dt.replace(tzinfo=timezone.utc)
     if last_add_history < now and c_dt > last_add_history:
         val = {"dt": round(now.timestamp()), "h": current["h"], "t": current["t"]}
         firebase_db.add_history(val)
@@ -60,6 +64,7 @@ def update_current(now):
     global last_update_current
     if last_update_current < now:
         c_dt = dt.datetime.utcfromtimestamp(current["dt"])
+        c_dt = c_dt.replace(tzinfo=timezone.utc)
         val = {"dt": c_dt.isoformat(), "h": current["h"], "t": current["t"], "tF": current["tF"]}
         firebase_db.update_current(val)
         last_update_current += dt.timedelta(seconds=update_current_interval)
