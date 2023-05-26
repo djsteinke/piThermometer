@@ -102,7 +102,7 @@ def main():
         get_current(now)
         update_current(now)
         add_history(now)
-        sleep(10)
+        sleep(5)
 
 
 if __name__ == '__main__':
