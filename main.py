@@ -65,10 +65,11 @@ def add_history(now):
 def update_current(now):
     global last_update_current
     logger.debug(f"now: {now}, last_add_history: {last_update_current}")
-    if last_update_current < now:
-        c_dt = dt.datetime.utcfromtimestamp(current["dt"])
-        c_dt = c_dt.replace(tzinfo=timezone.utc)
-        val = {"dt": c_dt.isoformat(), "h": current["h"], "t": current["t"], "tF": current["tF"]}
+    c_dt = dt.datetime.utcfromtimestamp(current["dt"])
+    c_dt = c_dt.replace(tzinfo=timezone.utc)
+    if last_update_current < now and c_dt > last_update_current:
+        dt_str = c_dt.isoformat()
+        val = {"dt": dt_str.split("+")[0], "h": current["h"], "t": current["t"], "tF": current["tF"]}
         firebase_db.update_current(val)
         last_update_current += dt.timedelta(seconds=update_current_interval)
 
