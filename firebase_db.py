@@ -3,6 +3,7 @@ from firebase_admin import db
 import logging
 import requests
 import datetime as dt
+from datetime import timezone
 
 module_logger = logging.getLogger('main.firebase_db')
 
@@ -21,7 +22,8 @@ history = ref.child('history')
 histories = []
 network_up = False
 network_check_interval = 15
-network_check_next = dt.datetime.now()
+network_check_next = dt.datetime.utcnow()
+network_check_next = network_check_next.replace(tzinfo=timezone.utc)
 
 
 def update_current(val):
