@@ -2,6 +2,7 @@ import requests
 import logging
 
 import datetime as dt
+from datetime import timezone
 
 import firebase_db
 
@@ -50,7 +51,7 @@ def add_history(now):
     global last_add_history
     c_dt = dt.datetime.utcfromtimestamp(current["dt"])
     if last_add_history < now and c_dt > last_add_history:
-        val = {"dt": now.timestamp(), "h": current["h"], "t": current["t"]}
+        val = {"dt": round(now.timestamp()), "h": current["h"], "t": current["t"]}
         firebase_db.add_history(val)
         last_add_history += dt.timedelta(seconds=add_history_interval)
 
@@ -78,6 +79,7 @@ def get_current(now):
 def main():
     while True:
         now = dt.datetime.utcnow()
+        now = now.replace(tzinfo=timezone.utc)
         firebase_db.check_network(now)
         get_current(now)
         update_current(now)
