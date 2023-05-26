@@ -3,6 +3,7 @@ import logging
 
 import datetime as dt
 from datetime import timezone
+from time import sleep
 
 import firebase_db
 
@@ -91,6 +92,7 @@ def main():
         get_current(now)
         update_current(now)
         add_history(now)
+        sleep(10)
 
 
 if __name__ == '__main__':
