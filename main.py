@@ -57,7 +57,7 @@ def add_history(now):
     global last_add_history
     c_dt = dt.datetime.utcfromtimestamp(current["dt"])
     c_dt = c_dt.replace(tzinfo=timezone.utc)
-    logger.debug(f"now: {now}, last_add_history: {last_add_history}")
+    # logger.debug(f"now: {now}, last_add_history: {last_add_history}")
     if last_add_history < now and c_dt > last_add_history:
         val = {"dt": round(now.timestamp()), "h": current["h"], "t": current["t"]}
         firebase_db.add_history(val)
@@ -66,7 +66,7 @@ def add_history(now):
 
 def update_current(now):
     global last_update_current
-    logger.debug(f"now: {now}, last_add_history: {last_update_current}")
+    # logger.debug(f"now: {now}, last_add_history: {last_update_current}")
     c_dt = dt.datetime.utcfromtimestamp(current["dt"])
     c_dt = c_dt.replace(tzinfo=timezone.utc)
     if last_update_current < now and c_dt > last_update_current:
@@ -91,6 +91,7 @@ def get_current(now):
                 dt_c = str(dt.datetime.now())
                 firebase_db.update_error({"dt": dt_c.split(".")[0], "msg": "Temp server down."})
                 server_down = True
+                logger.error("get_current() : server down.")
         last_get_current = now + dt.timedelta(seconds=get_current_interval)
 
 
