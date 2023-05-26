@@ -82,7 +82,7 @@ def get_current(now):
                 current = x.json()
             else:
                 logger.error("get_current() : " + str(x.status_code))
-        except ConnectionError:
+        except Exception:
             dt_c = dt.datetime.now()
             firebase_db.update_error({"dt": str(dt_c), "msg": "Temp server down."})
         last_get_current = now + dt.timedelta(seconds=get_current_interval)
