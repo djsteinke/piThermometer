@@ -26,6 +26,15 @@ network_check_next = dt.datetime.utcnow()
 network_check_next = network_check_next.replace(tzinfo=timezone.utc)
 
 
+def update_error(val):
+    if network_up:
+        try:
+            ref.child('error').set(val)
+            module_logger.debug("update_error() :\n" + str(val))
+        except Exception as e:
+            module_logger.error("update_error() : " + str(e) + "\n" + str(val))
+
+
 def update_current(val):
     if network_up:
         try:

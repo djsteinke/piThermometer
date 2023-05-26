@@ -76,11 +76,15 @@ def update_current(now):
 def get_current(now):
     global current, last_get_current
     if last_get_current < now:
-        x = requests.get("http://192.168.0.160")
-        if x.status_code == 200:
-            current = x.json()
-        else:
-            logger.error("get_current() : " + str(x.status_code))
+        try:
+            x = requests.get("http://192.168.0.160")
+            if x.status_code == 200:
+                current = x.json()
+            else:
+                logger.error("get_current() : " + str(x.status_code))
+        except ConnectionError:
+            dt_c = dt.datetime.now()
+            firebase_db.update_error({"dt": str(dt_c), "msg": "Temp server down."})
         last_get_current = now + dt.timedelta(seconds=get_current_interval)
 
 
