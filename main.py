@@ -83,6 +83,7 @@ def get_current(now):
             x = requests.get("http://192.168.0.160")
             if x.status_code == 200:
                 current = x.json()
+                current["dt"] = round(now.timestamp())
                 server_down = False
             else:
                 logger.error("get_current() : " + str(x.status_code))
