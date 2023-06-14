@@ -59,7 +59,7 @@ def add_history(now):
     c_dt = c_dt.replace(tzinfo=timezone.utc)
     # logger.debug(f"now: {now}, last_add_history: {last_add_history}")
     if last_add_history < now and c_dt > last_add_history:
-        val = {"dt": round(now.timestamp()), "h": current["h"], "t": current["t"]}
+        val = {"dt": round(now.timestamp()), "h": current["h"], "t": current["c"]}
         firebase_db.add_history(val)
         last_add_history += dt.timedelta(seconds=add_history_interval)
 
@@ -71,7 +71,6 @@ def update_current(now):
     c_dt = c_dt.replace(tzinfo=timezone.utc)
     if last_update_current < now and c_dt > last_update_current:
         dt_str = c_dt.isoformat()
-        logger.debug(current)
         val = {"dt": dt_str.split("+")[0], "h": current["h"], "t": current["c"], "tF": current["f"]}
         firebase_db.update_current(val)
         last_update_current += dt.timedelta(seconds=update_current_interval)
@@ -84,7 +83,6 @@ def get_current(now):
             x = requests.get("http://192.168.0.160")
             if x.status_code == 200:
                 current = x.json()
-                logger.debug(current)
                 current["dt"] = round(now.timestamp())
                 server_down = False
             else:
