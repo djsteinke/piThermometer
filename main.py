@@ -40,8 +40,8 @@ last_get_current = last_get_current.replace(tzinfo=timezone.utc)
 current = {
     "dt": 0,
     "h": 0,
-    "t": 0,
-    "tF": 0
+    "c": 0,
+    "f": 0
 }
 
 history = {
