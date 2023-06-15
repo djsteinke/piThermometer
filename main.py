@@ -6,7 +6,7 @@ from datetime import timezone
 from time import sleep
 
 import firebase_db
-
+import sensor
 
 # create logger with 'spam_application'
 logger = logging.getLogger('main')
@@ -79,20 +79,12 @@ def update_current(now):
 def get_current(now):
     global current, last_get_current, server_down
     if last_get_current < now:
-        try:
-            x = requests.get("http://192.168.0.160")
-            if x.status_code == 200:
-                current = x.json()
-                current["dt"] = round(now.timestamp())
-                server_down = False
-            else:
-                logger.error("get_current() : " + str(x.status_code))
-        except Exception:
-            if not server_down:
-                dt_c = str(dt.datetime.now())
-                firebase_db.update_error({"dt": dt_c.split(".")[0], "msg": "Temp server down."})
-                server_down = True
-                logger.error("get_current() : server down.")
+        old_dt = current['dt']
+        current = sensor.check_sensor(now)
+        if current['h'] > -1:
+            current["dt"] = round(now.timestamp())
+        else:
+            current["dt"] = old_dt
         last_get_current = now + dt.timedelta(seconds=get_current_interval)
 
 
