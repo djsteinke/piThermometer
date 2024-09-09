@@ -46,7 +46,8 @@ def update_current(val):
 
 def add_history(val):
     histories.append(val)
-    module_logger.debug("add_history() :")
+    log_msg = "add_history() : \n"
+    #module_logger.debug("add_history() :")
     while True:
         if network_up:
             try:
@@ -54,7 +55,7 @@ def add_history(val):
                 new_history = history.push()
                 new_history.set(h)
                 histories.pop(0)
-                module_logger.debug("\n" + str(h))
+                module_logger.debug(log_msg + str(h))
                 if len(histories) == 0:
                     break
             except Exception as e:
