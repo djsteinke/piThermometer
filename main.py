@@ -55,37 +55,47 @@ server_down = False
 
 def add_history(now):
     global last_add_history
-    c_dt = dt.datetime.utcfromtimestamp(current["dt"])
-    c_dt = c_dt.replace(tzinfo=timezone.utc)
-    # logger.debug(f"now: {now}, last_add_history: {last_add_history}")
-    if last_add_history < now and c_dt > last_add_history:
-        val = {"dt": round(now.timestamp()), "h": current["h"], "t": current["c"]}
-        firebase_db.add_history(val)
-        last_add_history += dt.timedelta(seconds=add_history_interval)
+    try:
+        c_dt = dt.datetime.utcfromtimestamp(current["dt"])
+        c_dt = c_dt.replace(tzinfo=timezone.utc)
+        # logger.debug(f"now: {now}, last_add_history: {last_add_history}")
+        if last_add_history < now and c_dt > last_add_history:
+            val = {"dt": round(now.timestamp()), "h": current["h"], "t": current["c"]}
+            firebase_db.add_history(val)
+            last_add_history += dt.timedelta(seconds=add_history_interval)
+    except Exception as e:
+        logger.error("ERROR : add_history() : " + str(e))
+
 
 
 def update_current(now):
     global last_update_current
-    # logger.debug(f"now: {now}, last_add_history: {last_update_current}")
-    c_dt = dt.datetime.utcfromtimestamp(current["dt"])
-    c_dt = c_dt.replace(tzinfo=timezone.utc)
-    if last_update_current < now and c_dt > last_update_current:
-        dt_str = c_dt.isoformat()
-        val = {"dt": dt_str.split("+")[0], "h": current["h"], "t": current["c"], "tF": current["f"]}
-        firebase_db.update_current(val)
-        last_update_current += dt.timedelta(seconds=update_current_interval)
+    try:
+        # logger.debug(f"now: {now}, last_add_history: {last_update_current}")
+        c_dt = dt.datetime.utcfromtimestamp(current["dt"])
+        c_dt = c_dt.replace(tzinfo=timezone.utc)
+        if last_update_current < now and c_dt > last_update_current:
+            dt_str = c_dt.isoformat()
+            val = {"dt": dt_str.split("+")[0], "h": current["h"], "t": current["c"], "tF": current["f"]}
+            firebase_db.update_current(val)
+            last_update_current += dt.timedelta(seconds=update_current_interval)
+    except Exception as e:
+        logger.error("ERROR : update_current() : " + str(e))
 
 
 def get_current(now):
     global current, last_get_current, server_down
-    if last_get_current < now:
-        old_dt = current['dt']
-        current = sensor.check_sensor(now)
-        if current['h'] > -1:
-            current["dt"] = round(now.timestamp())
-        else:
-            current["dt"] = old_dt
-        last_get_current = now + dt.timedelta(seconds=get_current_interval)
+    try:
+        if last_get_current < now:
+            old_dt = current['dt']
+            current = sensor.check_sensor(now)
+            if current['h'] > -1:
+                current["dt"] = round(now.timestamp())
+            else:
+                current["dt"] = old_dt
+            last_get_current = now + dt.timedelta(seconds=get_current_interval)
+    except Exception as e:
+        logger.error("ERROR : get_current() : " + str(e))
 
 
 def main():
