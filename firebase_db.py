@@ -5,6 +5,8 @@ import requests
 import datetime as dt
 from datetime import timezone
 
+from firebase_admin.exceptions import FirebaseError
+
 module_logger = logging.getLogger('main.firebase_db')
 
 databaseURL = "https://pitemperature-a22b2-default-rtdb.firebaseio.com"
@@ -58,7 +60,7 @@ def add_history(val):
                 module_logger.debug(log_msg + str(h))
                 if len(histories) == 0:
                     break
-            except Exception as e:
+            except ValueError or TypeError or FirebaseError as e:
                 module_logger.error("ERROR : " + str(e))
                 break
         else:
@@ -73,7 +75,6 @@ def check_network(now):
             if not network_up:
                 module_logger.debug('network state : UP')
             network_up = True
-            return network_up
         except:
             if network_up:
                 module_logger.error('network state : DOWN')

@@ -40,5 +40,7 @@ def check_sensor(now):
     if next_check < now:
         c, h = get_sensor_temp()
         f = get_f_from_c()
+        c = round(c, 1)
+        f = round(f, 1)
         next_check += dt.timedelta(seconds=check_interval)
     return {"c": c, "f": f, "h": h}

@@ -63,6 +63,7 @@ def add_history(now):
             val = {"dt": round(now.timestamp()), "h": current["h"], "t": current["c"]}
             firebase_db.add_history(val)
             last_add_history += dt.timedelta(seconds=add_history_interval)
+            logger.debug("add_history() complete")
     except Exception as e:
         logger.error("ERROR : add_history() : " + str(e))
 
