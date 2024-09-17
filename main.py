@@ -110,7 +110,7 @@ def main():
         update_current(now)
         add_history(now)
         sleep(300)
-        logger.debug("main() loop complete")
+        logger.debug("main() loop complete\n")
 
 
 if __name__ == '__main__':
