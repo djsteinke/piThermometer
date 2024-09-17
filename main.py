@@ -28,7 +28,7 @@ logger.addHandler(ch)
 
 update_current_interval = 300   # 5 mins
 add_history_interval = 1200  # 20 mins
-get_current_interval = 60
+get_current_interval = 300
 
 last_update_current = dt.datetime.utcnow()
 last_update_current = last_update_current.replace(tzinfo=timezone.utc)
@@ -80,6 +80,7 @@ def update_current(now):
             val = {"dt": dt_str.split("+")[0], "h": current["h"], "t": current["c"], "tF": current["f"]}
             firebase_db.update_current(val)
             last_update_current += dt.timedelta(seconds=update_current_interval)
+            logger.debug("update_current() complete")
     except Exception as e:
         logger.error("ERROR : update_current() : " + str(e))
 
@@ -95,6 +96,7 @@ def get_current(now):
             else:
                 current["dt"] = old_dt
             last_get_current = now + dt.timedelta(seconds=get_current_interval)
+            logger.debug("get_current() complete")
     except Exception as e:
         logger.error("ERROR : get_current() : " + str(e))
 
@@ -107,7 +109,8 @@ def main():
         get_current(now)
         update_current(now)
         add_history(now)
-        sleep(5)
+        sleep(300)
+        logger.debug("main() loop complete")
 
 
 if __name__ == '__main__':

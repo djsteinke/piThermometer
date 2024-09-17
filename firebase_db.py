@@ -72,11 +72,12 @@ def check_network(now):
     if network_check_next < now:
         try:
             requests.get("https://google.com")
-            if not network_up:
-                module_logger.debug('network state : UP')
+            #if not network_up:
+            module_logger.debug('network state : UP')
             network_up = True
         except:
-            if network_up:
-                module_logger.error('network state : DOWN')
+            #if network_up:
+            module_logger.error('network state : DOWN')
             network_up = False
         network_check_next = now + dt.timedelta(seconds=network_check_interval)
+        module_logger.debug('check_network() complete')
