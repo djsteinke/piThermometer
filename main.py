@@ -102,7 +102,9 @@ def get_current(now):
 
 
 def main():
+    cnt = 0
     while True:
+        cnt += 1
         now = dt.datetime.utcnow()
         now = now.replace(tzinfo=timezone.utc)
         firebase_db.check_network(now)
@@ -110,7 +112,7 @@ def main():
         update_current(now)
         add_history(now)
         sleep(300)
-        logger.debug("main() loop complete\n")
+        logger.debug(f"main() loop {cnt} complete\n")
 
 
 if __name__ == '__main__':
