@@ -32,7 +32,7 @@ def update_error(val):
     if network_up:
         try:
             ref.child('error').set(val)
-            module_logger.debug("update_error() :\n" + str(val))
+            module_logger.debug("update_error() : " + str(val))
         except Exception as e:
             module_logger.error("update_error() : " + str(e) + "\n" + str(val))
 
@@ -41,14 +41,14 @@ def update_current(val):
     if network_up:
         try:
             current.set(val)
-            module_logger.debug("update_current() :\n" + str(val))
+            module_logger.debug("update_current() : " + str(val))
         except Exception as e:
             module_logger.error("update_current() : " + str(e) + "\n" + str(val))
 
 
 def add_history(val):
     histories.append(val)
-    log_msg = "add_history() : \n"
+    log_msg = "add_history() : "
     #module_logger.debug("add_history() :")
     while True:
         if network_up:
